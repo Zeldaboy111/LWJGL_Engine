@@ -8,10 +8,10 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.system.MemoryUtil;
 
-public class Window {
+public final class Window {
     private final WindowSettings settings;
     private long handle;
-    public Window(final WindowSettings settings) throws Window.Exception {
+    Window(final WindowSettings settings) throws Window.Exception {
         // Run checks
         if(settings == null) {
             throw new Window.Exception("Cannot create Window: WindowSettings null");
@@ -42,13 +42,6 @@ public class Window {
         }
 
         initResizeHandler();
-
-        //TODO Remove this line
-        GLFW.glfwSetKeyCallback(handle, (handle, key, scanCode, action, mods) -> {
-            if(key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) {
-                GLFW.glfwSetWindowShouldClose(handle,true);
-            }
-        });
 
         openWindowCenteredOrMaximize();
 
@@ -118,11 +111,10 @@ public class Window {
         }
     }
 
-    //TODO Validate method visibility
     /**
      *  Updates the {@link Window} thereby swapping the buffers (rendering) and polling events
      */
-    public void update() {
+    void update() {
         GLFW.glfwSwapBuffers(handle);
         GLFW.glfwPollEvents();
     }
@@ -130,7 +122,7 @@ public class Window {
     /**
      *  Cleans up the {@link Window}
      */
-    public void cleanup() {
+    void cleanup() {
         GLFW.glfwDestroyWindow(handle);
     }
 
@@ -158,7 +150,7 @@ public class Window {
      *  Gets whether the {@link Window} should close
      * @return Whether the {@link Window} should close
      */
-    public boolean windowShouldClose() {
+    boolean windowShouldClose() {
         return GLFW.glfwWindowShouldClose(handle);
     }
 

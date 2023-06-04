@@ -74,8 +74,13 @@ public final class WindowSettings {
 
         this.width = width;
         this.height = height;
+        maximized = false;
 
-        maximized = width == 0 | height == 0;
+        if(width == 0 || height == 0) {
+            maximized = true;
+            this.width = 100; // Set for calculating
+            this.height = 100;
+        }
         updateProjectionMatrix();
     }
 
