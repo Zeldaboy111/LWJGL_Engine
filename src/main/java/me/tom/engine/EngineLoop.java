@@ -1,5 +1,7 @@
 package me.tom.engine;
 
+import me.tom.engine.render.RenderException;
+
 final class EngineLoop {
     private static final long NANOSECOND = 1000000000L;
     private static final float FRAMERATE = 1000;
@@ -87,7 +89,11 @@ final class EngineLoop {
      *  Renders the screen
      */
     private void render() {
-        engine.getGameLogic().render();
+        try {
+            engine.getGameLogic().render();
+        } catch (RenderException e) {
+            throw new RuntimeException(e);
+        }
         engine.getWindow().update();
     }
 

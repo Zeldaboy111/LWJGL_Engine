@@ -1,5 +1,6 @@
 package me.tom.engine.render;
 
+import me.tom.engine.EngineException;
 import me.tom.engine.Window;
 
 /**
@@ -9,9 +10,9 @@ public interface IGameLogic {
     /**
      *  Called upon initialization of the {@link IGameLogic}
      * @param window - {@link Window} used for the {@link IGameLogic}
-     * @throws RenderException
+     * @throws EngineException
      */
-    void init(final Window window) throws RenderException;
+    void init(final Window window) throws EngineException;
 
     /**
      *  Used to handle inputs received by the {@link me.tom.engine.Window}
@@ -25,8 +26,9 @@ public interface IGameLogic {
 
     /**
      *  Used to do the rendering of the game
+     * @throws RenderException
      */
-    void render();
+    void render() throws RenderException;
 
     /**
      *  Used to clean up the used resources.
