@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL30;
 
 public final class ShaderManager {
     private final int programId;
+    private final Uniforms uniforms;
     private Shader vertexShader, fragmentShader;
 
     public ShaderManager() throws ShaderException {
@@ -11,7 +12,16 @@ public final class ShaderManager {
         if(programId == 0) {
             throw new ShaderException("Cannot initialize ShaderManager: no shader could be created");
         }
+
+        this.uniforms = new Uniforms(programId);
     }
+
+    /**
+     *  Gets the container for every registered uniform inside the shaders
+     * @return {@link Uniforms} containing every registered uniform being used in the shader
+     */
+    public Uniforms getUniforms() { return uniforms; }
+
 
     /**
      *  Creates a new vertex shader with as file source {@param shaderFile}
@@ -43,7 +53,7 @@ public final class ShaderManager {
             throw new ShaderException("Cannot create shader: shaderCode null");
         }
 
-        final Shader shader = new Shader(shaderFile, shaderType);
+        final Shader shader = new ShaderFile(shaderFile, shaderType);
         shader.bind(programId);
         return shader;
     }
