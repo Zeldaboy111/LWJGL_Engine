@@ -25,4 +25,5 @@ buildNumber.properties
 log/
 target/
 src/main/java/old/
+src/main/java/test/
 test/
