@@ -1,17 +1,17 @@
-package me.zeldaboy111.engine;
+package me.zeldaboy111.engine.loop;
 
 import static org.lwjgl.opengl.GL11C.*;
 
-class LoopSecond {
+class DefaultLoopSecond implements LoopSecond {
     private final Loop loop;
     private final long startTime;
     private int frames, updates;
     private long lastProcessingStartTime, deltaFps, deltaUpdates;
 
 
-    LoopSecond(final Loop loop) {
+    DefaultLoopSecond(final Loop loop) {
         if(loop == null) {
-            throw new EngineException("Cannot instantiate LoopSecond: Loop null");
+            throw new LoopException("Cannot instantiate LoopSecond: Loop null");
         }
 
         this.loop = loop;
@@ -19,35 +19,30 @@ class LoopSecond {
         lastProcessingStartTime = startTime;
 
         frames = 0;
-        updates = 0;
-
         deltaFps = 0;
+
+        updates = 0;
         deltaUpdates = 0;
     }
-    LoopSecond(final LoopSecond previousSecond) {
+    DefaultLoopSecond(final DefaultLoopSecond previousSecond) {
         this(previousSecond == null ? null : previousSecond.loop);
 
         deltaFps = previousSecond.deltaFps;
         deltaUpdates = previousSecond.deltaUpdates;
     }
 
-    /**
-     *  Method used to process another {@link LoopSecond}
-     */
-    void process() {
+    @Override
+    public void process() {
         // Listen for events
         loop.getWindow().pollEvents();
 
         // Update delta-values
         updateDeltaFramesAndUpdates();
-        processInput();
 
-        if(mustUpdateBeProcessed()) {
-            processUpdate();
-        }
-        if(mustFrameBeProcessed()) {
-            processFrame();
-        }
+        // Process
+        processInput();
+        processUpdate();
+        processFrame();
 
         lastProcessingStartTime = now();
     }
@@ -61,19 +56,19 @@ class LoopSecond {
     }
 
     /**
-     *  Gets if a new frame should be processed
-     * @return Whether a new frame should be processed
+     *  Gets if there is no frame is to be processed
+     * @return Whether no frame update is to be processed
      */
-    private boolean mustFrameBeProcessed() {
-        return deltaFps > 0 || loop.getTargetFramesPerSecond() < 1;
+    private boolean isNoFrameToBeProcessed() {
+        return deltaFps < 1 && loop.getTargetFramesPerSecond() > 0;
     }
 
     /**
-     *  Gets if a new update should be processed
-     * @return Whether a new update should be processed
+     *  Gets if there is no update to be processed
+     * @return Whether no update is to be processed
      */
-    private boolean mustUpdateBeProcessed() {
-        return deltaUpdates > 0;
+    private boolean isNoUpdateToBeProcessed() {
+        return deltaUpdates < 1;
     }
 
     /**
@@ -88,7 +83,7 @@ class LoopSecond {
      *  Method used to process the user input
      */
     private void processInput() {
-        if (!mustFrameBeProcessed()) {
+        if (isNoFrameToBeProcessed()) {
             return; // Nothing to process
         }
 
@@ -99,7 +94,7 @@ class LoopSecond {
      *  Method used to process an update
      */
     private void processUpdate() {
-        if(!mustUpdateBeProcessed()) {
+        if(isNoUpdateToBeProcessed()) {
             return; // Nothing to process
         }
 
@@ -109,13 +104,14 @@ class LoopSecond {
         // updateTime = now;
 
         deltaUpdates--;
+        updates++;
     }
 
     /**
      *  Method used to process a frame
      */
     private void processFrame() {
-        if (!mustFrameBeProcessed()) {
+        if (isNoFrameToBeProcessed()) {
             return; // Nothing to process
         }
 
@@ -125,33 +121,20 @@ class LoopSecond {
 
         loop.getWindow().swapBuffers();
         deltaFps--;
+        frames++;
     }
 
 
-
-    /*
-        GETTERS
-     */
-
-    /**
-     *  Gets the amount of frames processed
-     * @return Amount of frames processed
-     */
-    int getFrames() {
+    @Override
+    public int getFrames() {
         return frames;
     }
 
-    /**
-     *  Gets the amount of updates processed
-     * @return Amount of updates processed
-     */
-    int getUpdates() {
+    @Override
+    public int getUpdates() {
         return updates;
     }
 
-    /**
-     *  Gets the current duration of the {@link LoopSecond} in milliseconds
-     * @return Current duration of the {@link LoopSecond} (in milliseconds)
-     */
-    long getDuration() { return now() - startTime; }
+    @Override
+    public long getDuration() { return now() - startTime; }
 }

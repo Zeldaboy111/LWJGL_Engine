@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>me.tom.engine</groupId>
   <artifactId>LWJGL_Engine</artifactId>
-  <version>1.0.0</version>
+  <version>DEV-0.0.1</version>
   <name>LWJGL_Engine</name>
   <packaging>jar</packaging>
 
@@ -95,6 +95,13 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- Maven -->
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <version>3.0</version>
+    </dependency>
+
     <!-- JUnit -->
     <dependency>
       <groupId>junit</groupId>

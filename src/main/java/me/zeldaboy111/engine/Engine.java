@@ -1,64 +1,52 @@
 package me.zeldaboy111.engine;
 
 import me.zeldaboy111.engine.window.Window;
-import me.zeldaboy111.engine.window.WindowConfiguration;
 
-public class Engine {
-    private final Window window;
-    private final Loop loop;
-    public Engine(final WindowConfiguration windowConfiguration) throws EngineInitializationException {
-        this.window = new Window(windowConfiguration);
-        this.loop = new Loop(this, window,
-                windowConfiguration.getFramesPerSecond(), windowConfiguration.getUpdatesPerSecond());
-    }
-
+public interface Engine {
     /**
      *  Method used to start the {@link EngineException}
-     * @throws EngineInitializationException - Thrown if the {@link Engine} cannot start
+     * @throws EngineInitializationException - Thrown if the {@link DefaultEngine} cannot start
      */
-    public void start() throws EngineInitializationException {
-        loop.start();
-    }
+    void start() throws EngineInitializationException;
 
     /**
      *  Sets the desired amount of renders/repaints per second to the given value
      * @param framesPerSecond - New value from the amount of renders/repaints per second
      */
-    public void setFramesPerSecond(final int framesPerSecond) {
-        loop.setTargetFramesPerSecond(framesPerSecond);
-    }
+    void setFramesPerSecond(final int framesPerSecond);
+
     /**
      *  Sets the desired amount of updates per second to the given value
      * @param updatesPerSecond - New value from the amount of updates per second
      */
-    public void setUpdatesPerSecond(final int updatesPerSecond) {
-        loop.setTargetUpdatesPerSecond(updatesPerSecond);
-    }
+    void setUpdatesPerSecond(final int updatesPerSecond);
 
     /**
      *  Gets the amount of frames processed in the last second
      * @return Amount of frames processed in the last second
      */
-    public int getFramesLastSecond() {
-        return loop.getFramesLastSecond();
-    }
+    int getFramesLastSecond();
 
     /**
      *  Gets the amount of updates processed in the last second
      * @return Amount of updates processed in the last second
      */
-    public int getUpdatesLastSecond() {
-        return loop.getUpdatesLastSecond();
-    }
+    int getUpdatesLastSecond();
 
     /**
-     *  Method used to cleanup the {@link Engine} and all subcomponents
+     *  Method used to get the {@link Window} used by the {@link Engine}
+     * @return {@link Window} used by the {@link Engine}
      */
-    void cleanup() {
-        //TODO METHOD
-        // appLogic.cleanup();
-        // render.cleanup();
-        // scene.cleanup();
-        window.cleanup();
-    }
+    Window getWindow();
+
+    /**
+     *  Method used to cleanup the {@link DefaultEngine} and all subcomponents
+     */
+    void cleanup();
+
+    /**
+     *  Gets the version from the {@link Engine} currently being used
+     * @return
+     */
+    String getVersion();
 }

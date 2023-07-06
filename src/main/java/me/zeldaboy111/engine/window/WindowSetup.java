@@ -16,13 +16,13 @@ final class WindowSetup {
 
     /**
      *  Method used to setup a new window
-     * @param configuration - {@link WindowConfiguration} to create a window from
+     * @param builder - {@link WindowBuilder} that created the {@link Window}
      * @return Handle of created window
      * @throws WindowInitializationException - Thrown if any error occurs
      */
-    static long setup(final WindowConfiguration configuration) throws WindowInitializationException {
-        if(configuration == null) {
-            throw new WindowInitializationException("Cannot setup Window: WindowConfiguration null");
+    static long setup(final WindowBuilder builder) throws WindowInitializationException {
+        if(builder == null) {
+            throw new WindowInitializationException("Cannot setup Window: WindowBuilder null");
         }
 
         /*
@@ -40,9 +40,9 @@ final class WindowSetup {
             Setup
 
          */
-        configure(configuration);
+        configure(builder);
 
-        long handle = createWindow(configuration);
+        long handle = createWindow(builder);
         centerWindow(handle);
 
         glfwMakeContextCurrent(handle);
@@ -53,12 +53,13 @@ final class WindowSetup {
     }
 
     /**
-     *  Configures the {@link Window} according to the given {@link WindowConfiguration}
+     *  Configures the {@link DefaultWindow} according to the given {@link WindowBuilder}
+     * @param builder - {@link WindowBuilder} used to create the {@link Window}
      */
-    private static void configure(WindowConfiguration configuration) {
+    private static void configure(final WindowBuilder builder) {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, getBooleanAsGlfwValue(configuration.isResizable()));
+        glfwWindowHint(GLFW_RESIZABLE, getBooleanAsGlfwValue(builder.isResizable()));
     }
 
     /**
@@ -72,14 +73,14 @@ final class WindowSetup {
 
     /**
      *  Method used to create a new GLFW-window
-     * @param configuration - {@link WindowConfiguration} to use to create a new window
+     * @param builder - {@link WindowBuilder} used to create the new {@link Window}
      * @return Handle of the created window
      * @throws WindowInitializationException Thrown if no window could be created
      */
-    private static long createWindow(final WindowConfiguration configuration) throws WindowInitializationException {
+    private static long createWindow(final WindowBuilder builder) throws WindowInitializationException {
         // Create new window
-        long handle = glfwCreateWindow(configuration.getWidth(), configuration.getHeight(),
-                configuration.getTitle(), NULL, NULL);
+        long handle = glfwCreateWindow(builder.getWidth(), builder.getHeight(),
+                builder.getTitle(), NULL, NULL);
 
         // Validate window has been created
         if(handle == NULL) {

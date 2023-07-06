@@ -1,36 +1,34 @@
-package me.zeldaboy111.engine;
+package me.zeldaboy111.engine.loop;
 
+import me.zeldaboy111.engine.Engine;
+import me.zeldaboy111.engine.EngineBuilder;
+import me.zeldaboy111.engine.EngineException;
+import me.zeldaboy111.engine.util.Constants;
 import me.zeldaboy111.engine.window.Window;
 import org.lwjgl.opengl.GL;
 
-class Loop {
-    private static final int MILLISECOND = 1000000;
+public class DefaultLoop implements Loop {
     private final Engine engine;
-    private final Window window;
     private boolean running;
     private int targetFramesPerSecond, targetUpdatesPerSecond;
     private double secondsPerFrame, secondsPerUpdate;
     private int framesLastSecond, updatesLastSecond;
 
-    Loop(final Engine engine, final Window window, final int framesPerSecond, final int updatesPerSecond) throws EngineInitializationException {
+    public DefaultLoop(final Engine engine, final EngineBuilder builder) throws LoopInitializationException {
         if(engine == null) {
-            throw new EngineInitializationException("Cannot create Loop: Engine null");
-        }
-        if(window == null) {
-            throw new EngineInitializationException("Cannot create Loop: Window null");
+            throw new LoopInitializationException("Cannot create Loop: Engine null");
         }
 
         // Set instance variables
         this.engine = engine;
-        this.window = window;
         this.running = false;
 
         // Try to set the frames and updates per second
         try {
-            setTargetFramesPerSecond(framesPerSecond);
-            setTargetUpdatesPerSecond(updatesPerSecond);
+            setTargetFramesPerSecond(builder.getFramesPerSecond());
+            setTargetUpdatesPerSecond(builder.getUpdatesPerSecond());
         } catch(EngineException e) {
-            throw new EngineInitializationException(e);
+            throw new LoopInitializationException(e);
         }
 
 
@@ -41,16 +39,13 @@ class Loop {
         // bindings available for use.
         GL.createCapabilities();
 
-        window.setClearColor(1f, 0f, 0f);
+        engine.getWindow().setClearColor(0f, 0f, 0f);
     }
 
-    /**
-     *  Sets the desired amount of renders/repaints per second to the given value
-     * @param framesPerSecond - New value from the amount of renders/repaints per second
-     */
-    void setTargetFramesPerSecond(final int framesPerSecond) {
+    @Override
+    public void setTargetFramesPerSecond(final int framesPerSecond) {
         if(framesPerSecond < 0) {
-            throw new EngineException("Cannot set frames per second: value must be positive!");
+            throw new LoopException("Cannot set frames per second: value must be positive!");
         }
 
         targetFramesPerSecond = framesPerSecond;
@@ -65,13 +60,10 @@ class Loop {
         secondsPerFrame = targetFramesPerSecond > 0 ? 1d / targetFramesPerSecond : 0;
     }
 
-    /**
-     *  Sets the desired amount of updates to the given value
-     * @param updatesPerSecond - New value from the amount of updates per second
-     */
-    void setTargetUpdatesPerSecond(final int updatesPerSecond) {
+    @Override
+    public void setTargetUpdatesPerSecond(final int updatesPerSecond) {
         if(updatesPerSecond < 0) {
-            throw new EngineException("Cannot set updates per second: value must be positive!");
+            throw new LoopException("Cannot set updates per second: value must be positive!");
         }
 
         targetUpdatesPerSecond = updatesPerSecond;
@@ -85,29 +77,28 @@ class Loop {
         secondsPerUpdate = 1d / targetUpdatesPerSecond;
     }
 
-    /**
-     *  Method used to start the {@link Loop}
-     * @throws EngineInitializationException Thrown when attempted to start whilst already active
-     */
-    void start() throws EngineInitializationException {
+    @Override
+    public void start() {
         if(running) {
-            throw new EngineInitializationException("Cannot start Loop: already running");
+            throw new LoopException("Cannot start Loop: already running");
         }
 
         this.running = true;
-        LoopSecond loopSecond = new LoopSecond(this);
+        DefaultLoopSecond loopSecond = new DefaultLoopSecond(this);
 
-        while(running && !window.shouldClose()) {
+        while(running && !engine.getWindow().shouldClose()) {
             loopSecond.process();
 
-            if(loopSecond.getDuration() >= MILLISECOND) {
+            if(loopSecond.getDuration() >= Constants.MILLISECOND) {
                 // Update frames and updates processed in the last second
                 this.framesLastSecond = loopSecond.getFrames();
                 this.updatesLastSecond = loopSecond.getUpdates();
 
                 // Set LoopSecond to new instance for the next second
-                loopSecond = new LoopSecond(loopSecond);
+                loopSecond = new DefaultLoopSecond(loopSecond);
             }
+
+            sleep();
         }
 
         running = true;
@@ -117,11 +108,20 @@ class Loop {
     }
 
     /**
-     *  Used to stop the {@link Loop}
+     *  Lets the {@link DefaultLoop} sleep for one millisecond
      */
+    private void sleep() {
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            throw new LoopException(e);
+        }
+    }
+
+    @Override
     public void stop() {
         if(!running) {
-            throw new EngineException("Cannot stop Loop: not running");
+            return;
         }
 
         running = false;
@@ -131,11 +131,23 @@ class Loop {
     /*
         GETTERS
      */
-    int getTargetFramesPerSecond() { return targetFramesPerSecond; }
-    double getSecondsPerFrame() { return secondsPerFrame; }
-    double getSecondsPerUpdate() { return secondsPerUpdate; }
-    Window getWindow() { return window; }
-
+    @Override
     public int getFramesLastSecond() { return framesLastSecond; }
+    @Override
     public int getUpdatesLastSecond() { return updatesLastSecond; }
+
+    @Override
+    public Window getWindow() {
+        return engine.getWindow();
+    }
+
+
+    @Override
+    public int getTargetFramesPerSecond() { return targetFramesPerSecond; }
+    @Override
+    public int getTargetUpdatesPerSecond() { return targetUpdatesPerSecond; }
+    @Override
+    public double getSecondsPerFrame() { return secondsPerFrame; }
+    @Override
+    public double getSecondsPerUpdate() { return secondsPerUpdate; }
 }
