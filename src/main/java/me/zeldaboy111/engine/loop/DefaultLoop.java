@@ -18,6 +18,9 @@ public class DefaultLoop implements Loop {
         if(engine == null) {
             throw new LoopInitializationException("Cannot create Loop: Engine null");
         }
+        if(builder == null) {
+            throw new LoopInitializationException("Cannot create Loop: EngineBuilder null");
+        }
 
         // Set instance variables
         this.engine = engine;
@@ -101,9 +104,8 @@ public class DefaultLoop implements Loop {
             sleep();
         }
 
-        running = true;
+        // Stop & Cleanup
         stop();
-
         engine.cleanup();
     }
 
