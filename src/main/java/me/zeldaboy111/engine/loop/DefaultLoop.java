@@ -3,12 +3,14 @@ package me.zeldaboy111.engine.loop;
 import me.zeldaboy111.engine.Engine;
 import me.zeldaboy111.engine.EngineBuilder;
 import me.zeldaboy111.engine.EngineException;
+import me.zeldaboy111.engine.logic.AppLogic;
 import me.zeldaboy111.engine.util.Constants;
 import me.zeldaboy111.engine.window.Window;
 import org.lwjgl.opengl.GL;
 
 public class DefaultLoop implements Loop {
     private final Engine engine;
+    private final AppLogic appLogic;
     private boolean running;
     private int targetFramesPerSecond, targetUpdatesPerSecond;
     private double secondsPerFrame, secondsPerUpdate;
@@ -24,6 +26,7 @@ public class DefaultLoop implements Loop {
 
         // Set instance variables
         this.engine = engine;
+        this.appLogic = builder.getAppLogic();
         this.running = false;
 
         // Try to set the frames and updates per second
@@ -86,16 +89,18 @@ public class DefaultLoop implements Loop {
             throw new LoopException("Cannot start Loop: already running");
         }
 
-        this.running = true;
-        DefaultLoopSecond loopSecond = new DefaultLoopSecond(this);
+        running = true;
+
+        appLogic.init();
+        DefaultLoopSecond loopSecond = new DefaultLoopSecond(this, appLogic);
 
         while(running && !engine.getWindow().shouldClose()) {
             loopSecond.process();
 
             if(loopSecond.getDuration() >= Constants.MILLISECOND) {
                 // Update frames and updates processed in the last second
-                this.framesLastSecond = loopSecond.getFrames();
-                this.updatesLastSecond = loopSecond.getUpdates();
+                framesLastSecond = loopSecond.getFrames();
+                updatesLastSecond = loopSecond.getUpdates();
 
                 // Set LoopSecond to new instance for the next second
                 loopSecond = new DefaultLoopSecond(loopSecond);

@@ -10,9 +10,9 @@ Below is a snippet from a main-method usable to start the Engine.
     public static void main(String[] args) {
         try {
             // Create a new instance of the Window
-            final Window window = new WindowBuilder().build();
+            final WindowBuilder windowBuilder = new WindowBuilder().build();
             // Create a new instance of the Engine
-            final Engine engine = new EngineBuilder().build(window);
+            final Engine engine = new EngineBuilder().build(windowBuilder);
             // Start the Engine
             engine.start();
             
@@ -24,5 +24,5 @@ Below is a snippet from a main-method usable to start the Engine.
 ```
 Settings can be customized when using the engine. To easily change settings, you can modify the builder. Let's say that you want a window with as title "Demo", you can use the snippet below to build a window with the desired title.
 ```java
-final Window window = new WindowBuilder().setTitle("Demo").build();
+final WindowBuilder windowBuilder = new WindowBuilder().setTitle("Demo");
 ```

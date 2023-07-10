@@ -4,6 +4,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glClearColor;
 
 public interface Window {
+
     /**
      *  Gets the handle of the {@link Window}
      * @return Handle of the {@link Window}
@@ -16,6 +17,11 @@ public interface Window {
     default void pollEvents() {
         glfwPollEvents();
     }
+
+    /**
+     *  Method used to center the {@link Window} on the monitor
+     */
+    void centerOnMonitor();
 
     /**
      *  Method used to swap the buffers thus displaying the last rendered scene

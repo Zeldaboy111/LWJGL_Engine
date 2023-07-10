@@ -1,22 +1,28 @@
 package me.zeldaboy111.engine.loop;
 
-import static org.lwjgl.opengl.GL11C.*;
+import me.zeldaboy111.engine.logic.AppLogic;
 
 class DefaultLoopSecond implements LoopSecond {
     private final Loop loop;
+    private final AppLogic appLogic;
     private final long startTime;
     private int frames, updates;
-    private long lastProcessingStartTime, deltaFps, deltaUpdates;
+    private long lastProcessingStartTime, lastUpdateTime, deltaFps, deltaUpdates;
 
 
-    DefaultLoopSecond(final Loop loop) {
+    DefaultLoopSecond(final Loop loop, final AppLogic appLogic) {
         if(loop == null) {
             throw new LoopException("Cannot instantiate LoopSecond: Loop null");
         }
+        if(appLogic == null) {
+            throw new LoopException("Cannot instantiate LoopSecond: AppLogic null");
+        }
 
         this.loop = loop;
+        this.appLogic = appLogic;
         startTime = System.currentTimeMillis();
         lastProcessingStartTime = startTime;
+        lastUpdateTime = startTime;
 
         frames = 0;
         deltaFps = 0;
@@ -25,10 +31,12 @@ class DefaultLoopSecond implements LoopSecond {
         deltaUpdates = 0;
     }
     DefaultLoopSecond(final DefaultLoopSecond previousSecond) {
-        this(previousSecond == null ? null : previousSecond.loop);
+        this(previousSecond == null ? null : previousSecond.loop,
+                previousSecond == null ? null : previousSecond.appLogic);
 
         deltaFps = previousSecond.deltaFps;
         deltaUpdates = previousSecond.deltaUpdates;
+        lastUpdateTime = previousSecond.lastUpdateTime;
     }
 
     @Override
@@ -87,7 +95,7 @@ class DefaultLoopSecond implements LoopSecond {
             return; // Nothing to process
         }
 
-        //TODO appLogic.input(window, scene, now - initialTime);
+        appLogic.input(loop.getWindow());
     }
 
     /**
@@ -98,11 +106,8 @@ class DefaultLoopSecond implements LoopSecond {
             return; // Nothing to process
         }
 
-        //TODO
-        // long diffTimeMillis = now - updateTime;
-        // appLogic.update(window, scene, diffTimeMillis);
-        // updateTime = now;
-
+        appLogic.update((now() - lastUpdateTime) / 1000d);
+        lastUpdateTime = now();
         deltaUpdates--;
         updates++;
     }
@@ -115,10 +120,7 @@ class DefaultLoopSecond implements LoopSecond {
             return; // Nothing to process
         }
 
-        //TODO render.render(window, scene);
-        loop.getWindow().setClearColor(1, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        appLogic.render(loop.getWindow());
         loop.getWindow().swapBuffers();
         deltaFps--;
         frames++;

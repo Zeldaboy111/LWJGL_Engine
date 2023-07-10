@@ -3,23 +3,21 @@ package me.zeldaboy111.engine;
 import me.zeldaboy111.engine.loop.DefaultLoop;
 import me.zeldaboy111.engine.loop.Loop;
 import me.zeldaboy111.engine.window.Window;
+import me.zeldaboy111.engine.window.WindowBuilder;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.lwjgl.Version;
-import org.lwjgl.opengl.GL;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Properties;
 
 public class DefaultEngine implements Engine {
     private final String version;
     private final Window window;
     private final Loop loop;
-    DefaultEngine(final Window window, final EngineBuilder builder) throws EngineInitializationException {
-        this.window = window;
+    DefaultEngine(final WindowBuilder windowBuilder, final EngineBuilder builder) throws EngineInitializationException {
+        this.window = windowBuilder.build();
         this.loop = new DefaultLoop(this, builder);
         this.version = getVersionFromPom();
     }
@@ -49,6 +47,7 @@ public class DefaultEngine implements Engine {
     public void start() {
         System.out.printf("[ENGINE] Started using Engine version: %s%n", version);
         System.out.printf("[ENGINE] Started using LWJGL-version: %s%n", Version.getVersion());
+
         loop.start();
     }
 

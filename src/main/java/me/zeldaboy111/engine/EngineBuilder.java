@@ -1,27 +1,37 @@
 package me.zeldaboy111.engine;
 
+import me.zeldaboy111.engine.logic.AppLogic;
+import me.zeldaboy111.engine.logic.DefaultAppLogic;
 import me.zeldaboy111.engine.window.Window;
+import me.zeldaboy111.engine.window.WindowBuilder;
+
+import java.io.IOException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 public final class EngineBuilder {
     private int framesPerSecond, updatesPerSecond;
+    private AppLogic appLogic;
     public EngineBuilder() {
         this.framesPerSecond = 60;
         updatesPerSecond = 20;
+        appLogic = new DefaultAppLogic();
     }
 
     /**
      *  Used to build the current configuration into an {@link Engine}
      *
-     * @param window - {@link Window} to create an {@link Engine} for
+     * @param windowBuilder - {@link WindowBuilder} to create an {@link Engine} for
      * @return Created {@link Engine}
      * @throws EngineInitializationException - Thrown if any issues occur during the building of the {@link Engine}
      */
-    public Engine build(final Window window) throws EngineInitializationException {
-        if (window == null) {
-            throw new EngineInitializationException("Cannot build Engine: Window null");
+    public synchronized Engine build(final WindowBuilder windowBuilder) throws EngineInitializationException {
+        if (windowBuilder == null) {
+            throw new EngineInitializationException("Cannot build Engine: WindowBuilder null");
         }
 
-        return new DefaultEngine(window, this);
+        return new DefaultEngine(windowBuilder, this);
     }
 
 
@@ -53,10 +63,23 @@ public final class EngineBuilder {
         return this;
     }
 
+    /**
+     *  Sets the {@link AppLogic} to be used to the given {@link AppLogic}
+     * @param appLogic - New {@link AppLogic} to be used
+     */
+    public EngineBuilder setAppLogic(final AppLogic appLogic) {
+        if(appLogic != null) {
+            this.appLogic = appLogic;
+        }
+
+        return this;
+    }
+
 
     /*
         GETTERS
      */
     public int getFramesPerSecond() { return framesPerSecond; }
     public int getUpdatesPerSecond() { return updatesPerSecond; }
+    public AppLogic getAppLogic() { return appLogic; }
 }

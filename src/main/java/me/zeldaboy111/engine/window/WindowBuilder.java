@@ -1,14 +1,21 @@
 package me.zeldaboy111.engine.window;
 
+import me.zeldaboy111.engine.window.resize.DefaultWindowResizeHandler;
+import me.zeldaboy111.engine.window.resize.WindowResizeHandler;
+
 public final class WindowBuilder {
     private String title;
     private int width, height;
-    private boolean resizable;
+    private boolean resizable, centerOnMonitor;
+    private WindowResizeHandler resizeHandler;
     public WindowBuilder() {
         title = "LWJGL Engine © Zeldaboy111";
         width = 1200;
         height = 1000;
         resizable = true;
+        centerOnMonitor = true;
+
+        resizeHandler = new DefaultWindowResizeHandler();
     }
 
     /**
@@ -16,7 +23,7 @@ public final class WindowBuilder {
      * @return Created {@link Window}
      * @throws WindowInitializationException - Thrown if any issues occur during the building of the {@link Window}
      */
-    public Window build() throws WindowInitializationException {
+    public synchronized Window build() throws WindowInitializationException {
         return new DefaultWindow(this);
     }
 
@@ -69,8 +76,31 @@ public final class WindowBuilder {
         return this;
     }
 
+    /**
+     *  Sets whether the {@link Window} should be centered on the monitor upon startup
+     * @param centerOnMonitor - Whether the {@link Window} should be centered on the monitor upon startup
+     */
+    public WindowBuilder setCenterOnMonitor(final boolean centerOnMonitor) {
+        this.centerOnMonitor = centerOnMonitor;
+        return this;
+    }
+
+    /**
+     *  Sets the {@link WindowResizeHandler} to be used upon resizing the {@link Window}
+     * @param resizeHandler - {@link WindowResizeHandler} to be used upon resizing the {@link Window}
+     */
+    public WindowBuilder setResizeHandler(final WindowResizeHandler resizeHandler) {
+        if(resizeHandler != null) {
+            this.resizeHandler = resizeHandler;
+        }
+
+        return this;
+    }
+
     String getTitle() { return title; }
-    boolean isResizable() { return resizable; }
     int getWidth() { return width; }
     int getHeight() { return height; }
+    boolean isResizable() { return resizable; }
+    boolean centerOnMonitor() { return centerOnMonitor; }
+    WindowResizeHandler getResizeHandler() { return resizeHandler; }
 }

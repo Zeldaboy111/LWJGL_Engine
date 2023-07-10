@@ -3,6 +3,7 @@ package me.zeldaboy111.engine;
 import me.zeldaboy111.engine.window.Window;
 
 public interface Engine {
+
     /**
      *  Method used to start the {@link EngineException}
      * @throws EngineInitializationException - Thrown if the {@link DefaultEngine} cannot start

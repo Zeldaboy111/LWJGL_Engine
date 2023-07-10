@@ -1,21 +1,16 @@
 package me.zeldaboy111.engine.window;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.system.MemoryStack;
-
-import java.nio.IntBuffer;
 
 import static java.sql.Types.NULL;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
-import static org.lwjgl.system.MemoryStack.stackPush;
 
 final class WindowSetup {
     private WindowSetup() { }
 
     /**
-     *  Method used to setup a new window
+     *  Method used to set up a new window
      * @param builder - {@link WindowBuilder} that created the {@link Window}
      * @return Handle of created window
      * @throws WindowInitializationException - Thrown if any error occurs
@@ -27,13 +22,15 @@ final class WindowSetup {
 
         /*
 
-            Set callback & init GLFW
+            Set error callback & Init GLFW
 
          */
         GLFWErrorCallback.createPrint(System.err).set();
         if(!glfwInit()) {
             throw new WindowInitializationException("Could not initialize GLFW!");
         }
+
+
 
         /*
 
@@ -42,8 +39,13 @@ final class WindowSetup {
          */
         configure(builder);
 
+        // Create window
         long handle = createWindow(builder);
-        centerWindow(handle);
+
+        // Set callbacks
+        glfwSetFramebufferSizeCallback(handle, (window, width, height) ->
+                builder.getResizeHandler().handle(window, width, height));
+        builder.getResizeHandler().loadSizeFromWindowUsingGLFW(handle);
 
         glfwMakeContextCurrent(handle);
         glfwSwapInterval(1); // V-sync enabled
@@ -89,29 +91,5 @@ final class WindowSetup {
 
         // Return handle of created window
         return handle;
-    }
-
-    /**
-     *  Centers the window on the primary monitor form the user
-     * @param handle - Handle from the window to center
-     */
-    private static void centerWindow(final long handle) {
-        try(MemoryStack stack = stackPush()) {
-            final IntBuffer width = stack.mallocInt(1);
-            final IntBuffer height = stack.mallocInt(1);
-
-            // Store the size passed in 'glfwCreateWindow' in the IntBuffers
-            glfwGetWindowSize(handle, width, height);
-
-            // Retrieve resolution of primary monitor
-            GLFWVidMode primaryMonitorVidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-            // Center the window
-            glfwSetWindowPos(
-                    handle,
-                    (primaryMonitorVidMode.width() - width.get(0)) / 2,
-                    (primaryMonitorVidMode.height() - height.get(0)) / 2
-            );
-        }
     }
 }
