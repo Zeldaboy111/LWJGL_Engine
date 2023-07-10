@@ -61,6 +61,7 @@ final class WindowSetup {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, getBooleanAsGlfwValue(builder.isResizable()));
+        glfwWindowHint(GLFW_DECORATED, getBooleanAsGlfwValue(builder.isDecorated()));
     }
 
     /**
@@ -81,7 +82,9 @@ final class WindowSetup {
     private static long createWindow(final WindowBuilder builder) throws WindowInitializationException {
         // Create new window
         long handle = glfwCreateWindow(builder.getWidth(), builder.getHeight(),
-                builder.getTitle(), NULL, NULL);
+                builder.getTitle(),
+                builder.isFullScreen() ? glfwGetPrimaryMonitor() : NULL,
+                NULL);
 
         // Validate window has been created
         if(handle == NULL) {

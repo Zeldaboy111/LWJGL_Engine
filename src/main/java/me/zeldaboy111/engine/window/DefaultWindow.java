@@ -2,11 +2,9 @@ package me.zeldaboy111.engine.window;
 
 import me.zeldaboy111.engine.window.resize.WindowResizeHandler;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class DefaultWindow implements Window {
     private final WindowResizeHandler resizeHandler;
@@ -16,6 +14,7 @@ public class DefaultWindow implements Window {
         this.resizeHandler = builder.getResizeHandler();
 
         if(builder.centerOnMonitor()) {
+            resizeHandler.setCenterOnMonitorAfterToggleFullscreen(true);
             centerOnMonitor();
         }
     }
@@ -30,24 +29,12 @@ public class DefaultWindow implements Window {
     }
     @Override
     public void centerOnMonitor() {
-        // Retrieve monitor
-        final long monitor = glfwGetPrimaryMonitor();
-        if(monitor == NULL) {
-            throw new WindowException("Cannot center Window: monitor not found");
-        }
+        resizeHandler.centerMonitor(handle);
+    }
 
-        // Retrieve VidMode from monitor
-        final GLFWVidMode monitorVidMode = glfwGetVideoMode(monitor);
-        if(monitorVidMode == null) {
-            throw new WindowException("Cannot center Window: VidMode not found");
-        }
-
-        // Center position
-        glfwSetWindowPos(
-                handle,
-                (monitorVidMode.width() - resizeHandler.getWidth()) / 2,
-                (monitorVidMode.height() - resizeHandler.getHeight()) / 2
-        );
+    @Override
+    public void setFullScreen(boolean fullScreen) {
+        resizeHandler.setFullScreen(handle, fullScreen);
     }
 
     @Override

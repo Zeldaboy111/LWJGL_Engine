@@ -24,6 +24,12 @@ public interface Window {
     void centerOnMonitor();
 
     /**
+     *  Makes the {@link Window} either fullscreen or not (based off the given value)
+     * @param fullScreen - Whether the {@link Window} should be fullscreen or not
+     */
+    void setFullScreen(boolean fullScreen);
+
+    /**
      *  Method used to swap the buffers thus displaying the last rendered scene
      */
     void swapBuffers();

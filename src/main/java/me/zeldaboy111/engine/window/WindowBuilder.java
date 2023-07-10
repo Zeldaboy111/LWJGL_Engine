@@ -7,13 +7,15 @@ import me.zeldaboy111.engine.window.resize.WindowResizeHandler;
 public final class WindowBuilder {
     private String title;
     private int width, height;
-    private boolean resizable, centerOnMonitor;
+    private boolean resizable, decorated, fullScreen, centerOnMonitor;
     private WindowResizeHandler resizeHandler;
     public WindowBuilder() {
         title = "LWJGL Engine © Zeldaboy111";
         width = 1200;
         height = 1000;
         resizable = true;
+        decorated = true;
+        fullScreen = false;
         centerOnMonitor = true;
 
         resizeHandler = new DefaultWindowResizeHandler();
@@ -69,11 +71,29 @@ public final class WindowBuilder {
     }
 
     /**
-     *  Sets whether the window may be resized by the user
-     * @param resizable - Whether the window may be resized by the user
+     *  Sets whether the {@link Window} may be resized by the user
+     * @param resizable - Whether the {@link Window} may be resized by the user
      */
     public WindowBuilder setResizable(final boolean resizable) {
         this.resizable = resizable;
+        return this;
+    }
+
+    /**
+     *  Sets whether the {@link Window} is decorated or not (undecorated hides the top bar)
+     * @param decorated - Whether the {@link Window} is decorated or not
+     */
+    public WindowBuilder setDecorated(final boolean decorated) {
+        this.decorated = decorated;
+        return this;
+    }
+
+    /**
+     *  Sets whether the {@link Window} should be displayed on fullscreen or not
+     * @param fullScreen - Whether the {@link Window} should be displayed fullscreen
+     */
+    public WindowBuilder setFullScreen(final boolean fullScreen) {
+        this.fullScreen = fullScreen;
         return this;
     }
 
@@ -102,6 +122,8 @@ public final class WindowBuilder {
     int getWidth() { return width; }
     int getHeight() { return height; }
     boolean isResizable() { return resizable; }
+    boolean isDecorated() { return decorated; }
     boolean centerOnMonitor() { return centerOnMonitor; }
+    boolean isFullScreen() { return fullScreen; }
     WindowResizeHandler getResizeHandler() { return resizeHandler; }
 }
