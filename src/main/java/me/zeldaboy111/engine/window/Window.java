@@ -69,7 +69,19 @@ public interface Window {
     void setTitle(final String title);
 
     /**
-     *  Method used to cleanup the {@link Window}
+     *  Gets the width from the {@link Window}
+     * @return Width from the {@link Window}
+     */
+    int getWidth();
+
+    /**
+     *  Gets the height from the {@link Window}
+     * @return Height from the {@link Window}
+     */
+    int getHeight();
+
+    /**
+     *  Method used to clean up the {@link Window}
      */
     void cleanup();
 }

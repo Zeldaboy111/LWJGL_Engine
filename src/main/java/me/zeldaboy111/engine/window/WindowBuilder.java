@@ -3,6 +3,7 @@ package me.zeldaboy111.engine.window;
 import me.zeldaboy111.engine.window.resize.DefaultWindowResizeHandler;
 import me.zeldaboy111.engine.window.resize.WindowResizeHandler;
 
+@SuppressWarnings("UnusedReturnValue")
 public final class WindowBuilder {
     private String title;
     private int width, height;

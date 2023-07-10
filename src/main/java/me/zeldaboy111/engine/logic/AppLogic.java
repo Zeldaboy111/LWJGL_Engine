@@ -25,4 +25,9 @@ public interface AppLogic {
      * @param window - {@link Window} to be rendered
      */
     void render(final Window window);
+
+    /**
+     *  Method used to clean up the {@link AppLogic}
+     */
+    void cleanup();
 }

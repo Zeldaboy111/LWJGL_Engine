@@ -12,4 +12,9 @@ public interface Renderer {
      */
     void clear();
 
+    /**
+     *  Method used to clean up the {@link Renderer}
+     */
+    void cleanup();
+
 }

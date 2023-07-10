@@ -4,13 +4,14 @@ import me.zeldaboy111.engine.loop.DefaultLoop;
 import me.zeldaboy111.engine.loop.Loop;
 import me.zeldaboy111.engine.window.Window;
 import me.zeldaboy111.engine.window.WindowBuilder;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.lwjgl.Version;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import java.io.FileReader;
-import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 
 public class DefaultEngine implements Engine {
     private final String version;
@@ -28,19 +29,29 @@ public class DefaultEngine implements Engine {
      */
     private String getVersionFromPom() {
         try {
-            // Load the pom.xml file
-            FileReader reader = new FileReader("./pom.xml");
+            File pomFile = new File("pom.xml");
 
-            // Read the FileRead into the MavenXpp3Reader
-            MavenXpp3Reader mavenReader = new MavenXpp3Reader();
-            Model model = mavenReader.read(reader);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(pomFile);
 
-            // Return the version
-            return model.getVersion();
-        } catch(XmlPullParserException | IOException e) {
-            return "NOT FOUND";
+            doc.getDocumentElement().normalize();
+
+            NodeList nodeList = doc.getElementsByTagName("version");
+
+            if (nodeList.getLength() > 0) {
+                Node versionNode = nodeList.item(0);
+                if (versionNode.getNodeType() == Node.ELEMENT_NODE) {
+                    return versionNode.getTextContent();
+                }
+            } else {
+                throw new EngineException("Could not retrieve version from pom.xml: tag missing");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+        return "NOT FOUND";
     }
 
     @Override
@@ -78,9 +89,11 @@ public class DefaultEngine implements Engine {
 
     @Override
     public void cleanup() {
+        if(loop != null) {
+            loop.cleanup();
+        }
+
         //TODO METHOD
-        // appLogic.cleanup();
-        // render.cleanup();
         // scene.cleanup();
         window.cleanup();
     }

@@ -70,6 +70,16 @@ public class DefaultWindow implements Window {
     }
 
     @Override
+    public int getWidth() {
+        return resizeHandler.getWidth();
+    }
+
+    @Override
+    public int getHeight() {
+        return resizeHandler.getHeight();
+    }
+
+    @Override
     public void cleanup() {
         glfwFreeCallbacks(handle);
 

@@ -1,5 +1,5 @@
 **ENGINE**\
-This Engine can be used to easily set-up an LWJGL-frame.
+This Engine can be used to easily set up an LWJGL-frame.
 
 **LICENSE**\
 Before using the Engine for a project, please ensure that you have read the license and are following the terms.

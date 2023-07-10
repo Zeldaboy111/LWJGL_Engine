@@ -4,7 +4,6 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 
 import static java.sql.Types.NULL;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 
 final class WindowSetup {
     private WindowSetup() { }

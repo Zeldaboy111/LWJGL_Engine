@@ -2,14 +2,10 @@ package me.zeldaboy111.engine;
 
 import me.zeldaboy111.engine.logic.AppLogic;
 import me.zeldaboy111.engine.logic.DefaultAppLogic;
-import me.zeldaboy111.engine.window.Window;
 import me.zeldaboy111.engine.window.WindowBuilder;
 
-import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 
+@SuppressWarnings("UnusedReturnValue")
 public final class EngineBuilder {
     private int framesPerSecond, updatesPerSecond;
     private AppLogic appLogic;

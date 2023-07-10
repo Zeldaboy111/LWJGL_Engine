@@ -6,9 +6,8 @@ public interface Engine {
 
     /**
      *  Method used to start the {@link EngineException}
-     * @throws EngineInitializationException - Thrown if the {@link DefaultEngine} cannot start
      */
-    void start() throws EngineInitializationException;
+    void start();
 
     /**
      *  Sets the desired amount of renders/repaints per second to the given value
@@ -41,13 +40,13 @@ public interface Engine {
     Window getWindow();
 
     /**
-     *  Method used to cleanup the {@link DefaultEngine} and all subcomponents
+     *  Method used to clean up the {@link DefaultEngine} and all subcomponents
      */
     void cleanup();
 
     /**
      *  Gets the version from the {@link Engine} currently being used
-     * @return
+     * @return Current version from the {@link Engine}
      */
     String getVersion();
 }

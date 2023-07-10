@@ -66,4 +66,9 @@ public interface Loop {
      * @return Amount of seconds between each update
      */
     double getSecondsPerUpdate();
+
+    /**
+     *  Method used to clean up the {@link Loop}
+     */
+    void cleanup();
 }

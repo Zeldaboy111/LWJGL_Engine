@@ -31,8 +31,12 @@ public class DefaultAppLogic implements AppLogic {
 
     @Override
     public void render(Window window) {
-        System.out.println(" COLOR: " + color);
         window.setClearColor(color, color, color);
         renderer.clear();
+    }
+
+    @Override
+    public void cleanup() {
+        renderer.cleanup();
     }
 }

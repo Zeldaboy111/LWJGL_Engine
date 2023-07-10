@@ -111,6 +111,7 @@ public class DefaultLoop implements Loop {
 
         // Stop & Cleanup
         stop();
+
         engine.cleanup();
     }
 
@@ -148,7 +149,6 @@ public class DefaultLoop implements Loop {
         return engine.getWindow();
     }
 
-
     @Override
     public int getTargetFramesPerSecond() { return targetFramesPerSecond; }
     @Override
@@ -157,4 +157,10 @@ public class DefaultLoop implements Loop {
     public double getSecondsPerFrame() { return secondsPerFrame; }
     @Override
     public double getSecondsPerUpdate() { return secondsPerUpdate; }
+
+    @Override
+    public void cleanup() {
+        appLogic.cleanup();
+
+    }
 }
