@@ -1,13 +1,17 @@
 package me.zeldaboy111.engine.logic;
 
 import me.zeldaboy111.engine.graphic.model.Mesh;
-import me.zeldaboy111.engine.graphic.model.MeshLoader;
+import me.zeldaboy111.engine.graphic.model.VertexMesh;
 import me.zeldaboy111.engine.graphic.render.DefaultRenderer;
 import me.zeldaboy111.engine.graphic.render.Renderer;
 import me.zeldaboy111.engine.window.Window;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DefaultAppLogic implements AppLogic {
+    private final List<Mesh> meshes;
     private final Renderer renderer;
     private float color;
     private Mesh mesh;
@@ -15,6 +19,7 @@ public class DefaultAppLogic implements AppLogic {
 
     public DefaultAppLogic() {
         renderer = new DefaultRenderer();
+        meshes = new ArrayList<>();
     }
 
     @Override
@@ -27,7 +32,9 @@ public class DefaultAppLogic implements AppLogic {
                 0.5f, -0.5f, 0.0f
         };
 
-        mesh = MeshLoader.loadMesh(vertices);
+        //mesh = MeshLoader.loadMesh(vertices);
+        mesh = new VertexMesh(vertices);
+        meshes.add(mesh);
     }
 
     @Override
@@ -55,6 +62,6 @@ public class DefaultAppLogic implements AppLogic {
     @Override
     public void cleanup() {
         renderer.cleanup();
-        MeshLoader.cleanup();
+        meshes.forEach(Mesh::cleanup);
     }
 }

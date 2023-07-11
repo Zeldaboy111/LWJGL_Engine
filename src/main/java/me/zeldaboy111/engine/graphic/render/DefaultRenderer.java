@@ -44,6 +44,8 @@ public class DefaultRenderer implements Renderer {
 
     @Override
     public void cleanup() {
-
+        if(shaderProgram != null) {
+            shaderProgram.cleanup();
+        }
     }
 }

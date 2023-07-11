@@ -17,4 +17,8 @@ public interface Mesh {
      */
     void unbind();
 
+    /**
+     *  Used to clean up the {@link Mesh} making it no longer usable
+     */
+    void cleanup();
 }
