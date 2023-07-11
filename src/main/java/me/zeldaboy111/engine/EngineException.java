@@ -7,5 +7,5 @@ public class EngineException extends RuntimeException {
     protected EngineException(final Exception e) {
         super(e);
     }
-
+    protected EngineException(String message, Exception e) {super(message, e);}
 }
