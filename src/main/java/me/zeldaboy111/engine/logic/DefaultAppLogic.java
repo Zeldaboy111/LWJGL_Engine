@@ -1,40 +1,42 @@
 package me.zeldaboy111.engine.logic;
 
 import me.zeldaboy111.engine.graphic.model.Mesh;
-import me.zeldaboy111.engine.graphic.model.VertexMesh;
+import me.zeldaboy111.engine.graphic.model.BasicMesh;
 import me.zeldaboy111.engine.graphic.render.DefaultRenderer;
 import me.zeldaboy111.engine.graphic.render.Renderer;
+import me.zeldaboy111.engine.scene.DefaultScene;
+import me.zeldaboy111.engine.scene.Scene;
 import me.zeldaboy111.engine.window.Window;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DefaultAppLogic implements AppLogic {
-    private final List<Mesh> meshes;
+    private final Scene scene;
     private final Renderer renderer;
     private float color;
-    private Mesh mesh;
 
 
     public DefaultAppLogic() {
         renderer = new DefaultRenderer();
-        meshes = new ArrayList<>();
+        scene = new DefaultScene();
     }
 
     @Override
     public void init() {
         renderer.init();
 
-        float[] vertices = new float[]{
-                0.0f,  0.5f, 0.0f,
+        float[] vertices = new float[] {
+                -0.5f,  0.5f, 0.0f,
                 -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f
+                0.5f, -0.5f, 0.0f,
+                0.5f,  0.5f, 0.0f
+        };
+        int[] indices = new int[]{
+                0, 1, 3,
+                3, 1, 2
         };
 
-        //mesh = MeshLoader.loadMesh(vertices);
-        mesh = new VertexMesh(vertices);
-        meshes.add(mesh);
+        final Mesh mesh = new BasicMesh(vertices, indices);
+        scene.addMesh("rectangle", mesh);
     }
 
     @Override
@@ -56,12 +58,12 @@ public class DefaultAppLogic implements AppLogic {
 
     @Override
     public void render(Window window) {
-        renderer.render(window, mesh);
+        scene.render(window, renderer);
     }
 
     @Override
     public void cleanup() {
         renderer.cleanup();
-        meshes.forEach(Mesh::cleanup);
+        scene.cleanup();
     }
 }

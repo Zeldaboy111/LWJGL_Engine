@@ -16,11 +16,21 @@ public interface Renderer {
     void clear();
 
     /**
+     *  Used to bind the {@link Renderer} thereby preparing it to render
+     * @param window - {@link Window} to bind the {@link Renderer} to
+     */
+    void bind(final Window window);
+
+    /**
      *  Method used to render
-     * @param window - {@link Window} to render to
      * @param mesh - {@link Mesh} to render
      */
-    void render(final Window window, final Mesh mesh);
+    void render(final Mesh mesh);
+
+    /**
+     *  Used to unbind the {@link Renderer}
+     */
+    void unbind();
 
     /**
      *  Method used to clean up the {@link Renderer}

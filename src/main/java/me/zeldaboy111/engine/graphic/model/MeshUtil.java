@@ -3,6 +3,7 @@ package me.zeldaboy111.engine.graphic.model;
 import me.zeldaboy111.engine.util.BufferUtil;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
@@ -69,20 +70,38 @@ final class MeshUtil {
         }
 
         final FloatBuffer floatBuffer = BufferUtil.toFloatBuffer(contents);
-        final int vboId = generateAndBindVertexBufferObject();
+        final int vboId = generateAndBindVertexBufferObject(GL_ARRAY_BUFFER);
         glBufferData(GL_ARRAY_BUFFER, floatBuffer, GL_STATIC_DRAW);
         memFree(floatBuffer);
+
+        return vboId;
+    }
+    /**
+     *  Used to create a new vertex buffer object containing the given {@param contents}
+     * @param contents - Int-contents from the vertex buffer object to be created
+     * @return ID from the created vertex buffer object
+     */
+    static int createVboWithContentsIntArray(final int[] contents) {
+        if(contents == null) {
+            throw new ModelException("Cannot create Vertex Buffer Object: contents null");
+        }
+
+        final IntBuffer intBuffer = BufferUtil.toIntBuffer(contents);
+        final int vboId = generateAndBindVertexBufferObject(GL_ELEMENT_ARRAY_BUFFER);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, intBuffer, GL_STATIC_DRAW);
+        memFree(intBuffer);
 
         return vboId;
     }
 
     /**
      *  Method used to create a new vertex buffer object and bind it towards OpenGL
+     * @param target - Target to bind to
      * @return ID from the created vertex buffer object
      */
-    static int generateAndBindVertexBufferObject() {
+    static int generateAndBindVertexBufferObject(int target) {
         final int id = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, id);
+        glBindBuffer(target, id);
 
         return id;
     }

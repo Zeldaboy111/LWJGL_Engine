@@ -24,21 +24,30 @@ public class DefaultRenderer implements Renderer {
     }
 
     @Override
-    public void render(Window window, Mesh mesh) {
+    public void bind(final Window window) {
+        if(window == null) {
+            throw new RenderException("Cannot bind render to Window: Window null");
+        }
+
         clear();
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
-        // Render
+        shaderProgram.bind();
+    }
+
+    @Override
+    public void render(Mesh mesh) {
         if(mesh == null) {
             return;
         }
 
-        shaderProgram.bind();
-
         mesh.bind();
         mesh.render();
         mesh.unbind();
+    }
 
+    @Override
+    public void unbind() {
         shaderProgram.unbind();
     }
 

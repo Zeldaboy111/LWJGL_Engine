@@ -6,32 +6,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static me.zeldaboy111.engine.graphic.model.MeshUtil.*;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL30.*;
 
-public class VertexMesh implements Mesh {
+public class BasicMesh implements Mesh {
     protected final int vaoId;
     protected final List<Integer> vboIds;
     protected int nextAttributeId;
     private final int numberOfVertices;
-    public VertexMesh(final float[] vertices) {
+    public BasicMesh(final float[] vertices, final int[] indices) {
         if(!validateVertices(vertices)) {
             throw new ModelException(
                     String.format("Cannot create Mesh: vertices length no multiple of %d", VERTICES_PER_POINT));
+        }
+        if(indices == null || indices.length < 1) {
+            throw new ModelException("Cannot create Mesh: indices length must be at least 1");
         }
 
         this.vaoId = glGenVertexArrays();
         glBindVertexArray(vaoId);
 
-        numberOfVertices = vertices.length / VERTICES_PER_POINT;
+        numberOfVertices = indices.length;
         nextAttributeId = 0;
 
         // Create list of VBOs and generate VBO for vertices
         vboIds = new ArrayList<>();
         vboIds.add(createVboWithContentsFloatArray(vertices));
+        vboIds.add(createVboWithContentsIntArray(indices));
 
         // Set attributes
         setAttributePointer(3, GL_FLOAT, false, 0, 0);
@@ -57,7 +59,7 @@ public class VertexMesh implements Mesh {
 
     @Override
     public void render() {
-        glDrawArrays(GL_TRIANGLES, 0, numberOfVertices);
+        glDrawElements(GL_TRIANGLES, numberOfVertices, GL_UNSIGNED_INT, 0);
     }
 
     @Override
