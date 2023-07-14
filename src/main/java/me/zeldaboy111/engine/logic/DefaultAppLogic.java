@@ -1,8 +1,8 @@
 package me.zeldaboy111.engine.logic;
 
+import me.zeldaboy111.engine.graphic.model.ColoredMesh;
 import me.zeldaboy111.engine.graphic.model.Mesh;
-import me.zeldaboy111.engine.graphic.model.BasicMesh;
-import me.zeldaboy111.engine.graphic.render.DefaultRenderer;
+import me.zeldaboy111.engine.graphic.render.ColorRenderer;
 import me.zeldaboy111.engine.graphic.render.Renderer;
 import me.zeldaboy111.engine.scene.DefaultScene;
 import me.zeldaboy111.engine.scene.Scene;
@@ -16,7 +16,7 @@ public class DefaultAppLogic implements AppLogic {
 
 
     public DefaultAppLogic() {
-        renderer = new DefaultRenderer();
+        renderer = new ColorRenderer();
         scene = new DefaultScene();
     }
 
@@ -30,12 +30,18 @@ public class DefaultAppLogic implements AppLogic {
                 0.5f, -0.5f, 0.0f,
                 0.5f,  0.5f, 0.0f
         };
+        float[] colors = new float[]{
+                0.5f, 0.0f, 0.0f,
+                0.0f, 0.5f, 0.0f,
+                0.0f, 0.0f, 0.5f,
+                0.0f, 0.5f, 0.5f
+        };
         int[] indices = new int[]{
                 0, 1, 3,
                 3, 1, 2
         };
 
-        final Mesh mesh = new BasicMesh(vertices, indices);
+        final Mesh mesh = new ColoredMesh(vertices, colors, indices);
         scene.addMesh("rectangle", mesh);
     }
 

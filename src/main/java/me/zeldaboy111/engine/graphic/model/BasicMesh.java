@@ -15,7 +15,7 @@ public class BasicMesh implements Mesh {
     protected final List<Integer> vboIds;
     protected int nextAttributeId;
     private final int numberOfVertices;
-    public BasicMesh(final float[] vertices, final int[] indices) {
+    protected BasicMesh(final float[] vertices, final int[] indices, final boolean unbind) {
         if(!validateVertices(vertices)) {
             throw new ModelException(
                     String.format("Cannot create Mesh: vertices length no multiple of %d", VERTICES_PER_POINT));
@@ -39,8 +39,13 @@ public class BasicMesh implements Mesh {
         setAttributePointer(3, GL_FLOAT, false, 0, 0);
 
         // Unbind
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        unbind();
+        if(unbind) {
+            unbind();
+        }
+
+    }
+    public BasicMesh(final float[] vertices, final int[] indices) {
+        this(vertices, indices, true);
     }
 
     /**
@@ -70,6 +75,7 @@ public class BasicMesh implements Mesh {
 
     @Override
     public void unbind() {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
         disableAttributeArrays(nextAttributeId);
         glBindVertexArray(0);
     }
@@ -77,7 +83,12 @@ public class BasicMesh implements Mesh {
 
     @Override
     public void cleanup() {
+        // Delete vertex buffer objects
         vboIds.forEach(GL30::glDeleteBuffers);
+
+        // Unbind
+        unbind();
+        // Delete vertex array object
         glDeleteVertexArrays(vaoId);
     }
 

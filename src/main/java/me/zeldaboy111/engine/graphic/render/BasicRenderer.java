@@ -8,13 +8,13 @@ import me.zeldaboy111.engine.window.Window;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class DefaultRenderer implements Renderer {
-    private ShaderProgram shaderProgram;
+public class BasicRenderer implements Renderer {
+    protected ShaderProgram shaderProgram;
     @Override
     public void init() {
         shaderProgram = new DefaultShaderProgram();
-        shaderProgram.createVertexShader(Util.readFile("./src/main/resources/shader/vertex.vert"));
-        shaderProgram.createFragmentShader(Util.readFile("./src/main/resources/shader/fragment.frag"));
+        shaderProgram.createVertexShader(Util.readFile("./src/main/resources/shader/basic/vertex.vert"));
+        shaderProgram.createFragmentShader(Util.readFile("./src/main/resources/shader/basic/fragment.frag"));
         shaderProgram.link();
     }
 
