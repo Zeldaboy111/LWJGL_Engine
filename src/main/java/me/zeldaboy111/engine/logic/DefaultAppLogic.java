@@ -12,7 +12,6 @@ import org.lwjgl.glfw.GLFW;
 public class DefaultAppLogic implements AppLogic {
     private final Scene scene;
     private final Renderer renderer;
-    private float color;
 
 
     public DefaultAppLogic() {
@@ -56,10 +55,7 @@ public class DefaultAppLogic implements AppLogic {
 
     @Override
     public void update(double timePassed) {
-        color += timePassed;
-        if(color > 1f) {
-            color = 0;
-        }
+
     }
 
     @Override
